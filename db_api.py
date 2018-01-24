@@ -122,6 +122,10 @@ def save_subscriber(is_subscriber_v4, is_subscriber_v6, subscriber_id, subscribe
     except db_api.IntegrityError as e:
         db.rollback()
         subscriber_exist = True
+    except db_api.DatabaseError as e:
+        db.rollback()
+        logging.critical("Database insert error - {}".format(e))
+        return ERROR_STATE
 
     if subscriber_exist:
         try:

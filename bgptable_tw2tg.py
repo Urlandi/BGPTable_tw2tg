@@ -16,10 +16,12 @@ import logging
 repost_task = None
 
 
-def scheduler(db, birdy_client, bot,
+def scheduler(db,  bot,
               bgp4_last_tweet=1, bgp6_last_tweet=1,
               bgp4_next_update=True, bgp6_next_update=True,
               repeated=0):
+
+    birdy_client = twitter_connect()
 
     bgp4_table_name = "bgp4_table"
     bgp4_current_tweet = bgp4_last_tweet
@@ -74,7 +76,7 @@ def scheduler(db, birdy_client, bot,
     timer_start_at = (timenow // next_start_in + 1) * next_start_in - timenow + internet_wait
 
     global repost_task
-    repost_task = Timer(timer_start_at, scheduler, (db, birdy_client, bot,
+    repost_task = Timer(timer_start_at, scheduler, (db, bot,
                                                     bgp4_current_tweet, bgp6_current_tweet,
                                                     bgp4_need_update, bgp6_need_update,
                                                     repeat_count))
@@ -124,13 +126,6 @@ def main():
 
     logging.debug("Database subscribers loaded")
 
-    logging.debug("Twitter initialising")
-    birdy_client = twitter_connect()
-    if birdy_client is None:
-        exit_status_code = STOP_AND_EXIT
-        return exit_status_code
-    logging.debug("Twitter initialised")
-
     logging.debug("Telegram connecting")
     telegram_job = telegram_connect()
     if telegram_job is None:
@@ -139,7 +134,7 @@ def main():
     logging.debug("Telegram bot started")
 
     logging.debug("Scheduler job starting")
-    if scheduler(subscribers_database, birdy_client, telegram_job.bot, bgp4_last_status, bgp6_last_status) != DONE:
+    if scheduler(subscribers_database, telegram_job.bot, bgp4_last_status, bgp6_last_status) != DONE:
         exit_status_code = STOP_AND_EXIT
         return exit_status_code
     logging.debug("Scheduler job run")

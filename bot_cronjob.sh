@@ -6,7 +6,7 @@ declare -r BASE_DIR='/opt/BGP-Table'
 declare -r BOT_FILE='bgptable_tw2tg.py'
 declare -r NOT_FOUND=1
 
-ps ax | grep $BOT_FILE$
+ps ax | grep -q $BOT_FILE$
 
 process_found=$?
 

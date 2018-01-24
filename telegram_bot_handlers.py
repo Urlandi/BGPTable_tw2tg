@@ -109,7 +109,7 @@ def send_status(bot, subscriber_id, message, status):
 
     except telegram.error as e:
 
-        logging.info("{:d} sending skipping because - {}".format(subscriber_id, e))
+        logging.error("{:d} sending skipping because - {}".format(subscriber_id, e))
 
     return sent
 

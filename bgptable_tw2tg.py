@@ -9,7 +9,7 @@ from telegram_bot import telegram_connect
 from telegram_bot_handlers import update_status_all_v4, update_status_all_v6
 
 
-from db_api import db_connect, db_close, load_bgp_table_status, load_subscribers
+from db_api import db_connect, db_close, load_bgp_table_status, load_subscribers, base_dirname
 
 import logging
 
@@ -93,7 +93,7 @@ def main():
 
     exit_status_code = DONE
 
-    _logging_file_name = "bgptable_tw2tg.log"
+    _logging_file_name = base_dirname+"bgptable_tw2tg.log"
     logging.basicConfig(filename=_logging_file_name,
                         level=logging.INFO,
                         format="'%(asctime)s: %(name)s-%(levelname)s: %(message)s'")

@@ -99,9 +99,17 @@ def send_status(bot, subscriber_id, message, status):
             bot.send_message(chat_id=subscriber_id,
                              text=message.format(status),
                              parse_mode=telegram.ParseMode.HTML)
-    except telegram.error.Unauthorized as e:
-        logging.info("{:d} stopped because - {}".format(subscriber_id, e))
+
+    except (telegram.error.Unauthorized,
+            telegram.error.BadRequest,
+            telegram.error.ChatMigrated) as e:
+
+        logging.info("{:d} sending stopped because - {}".format(subscriber_id, e))
         sent = False
+
+    except telegram.error as e:
+
+        logging.info("{:d} sending skipping because - {}".format(subscriber_id, e))
 
     return sent
 

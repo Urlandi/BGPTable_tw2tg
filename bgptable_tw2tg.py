@@ -71,7 +71,7 @@ def scheduler(db,  bot,
 
     save_bgp_table_status(bgp4_current_tweet, bgp6_current_tweet, db)
 
-    internet_wait = 5
+    internet_wait = 30
     timenow = round(datetime.now().timestamp())
     timer_start_at = (timenow // next_start_in + 1) * next_start_in - timenow + internet_wait
 

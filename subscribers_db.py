@@ -27,18 +27,22 @@ def subscriber_v6_add(subscriber_id):
     _subscribers_v6.add(subscriber_id)
 
 
+def _subscribers_rem(subscriber_id, subscribers):
+
+    if 0 < len(subscribers) and _is_subscriber(subscriber_id, subscribers):
+        subscribers.remove(subscriber_id)
+
+
 def subscriber_v4_rem(subscriber_id):
     global _subscribers_v4
 
-    if 0 < len(_subscribers_v4) and is_subscriber_v4(subscriber_id):
-        _subscribers_v4.remove(subscriber_id)
+    _subscribers_rem(subscriber_id, _subscribers_v4)
 
 
 def subscriber_v6_rem(subscriber_id):
     global _subscribers_v6
 
-    if 0 < len(_subscribers_v6) and is_subscriber_v6(subscriber_id):
-        _subscribers_v6.remove(subscriber_id)
+    _subscribers_rem(subscriber_id, _subscribers_v6)
 
 
 def subscriber_start(subscriber_id):
@@ -61,18 +65,21 @@ def subscriber_stop(subscriber_id):
     db_api.delete_subscriber(subscriber_id)
 
 
+def _is_subscriber(subscriber_id, subscribers):
+    subscription = subscriber_id in subscribers
+    return subscription
+
+
 def is_subscriber_v4(subscriber_id):
     global _subscribers_v4
 
-    ipv4_subscritpion = subscriber_id in _subscribers_v4
-    return ipv4_subscritpion
+    return _is_subscriber(subscriber_id, _subscribers_v4)
 
 
 def is_subscriber_v6(subscriber_id):
     global _subscribers_v6
 
-    ipv6_subscritpion = subscriber_id in _subscribers_v6
-    return ipv6_subscritpion
+    return _is_subscriber(subscriber_id, _subscribers_v6)
 
 
 def save_bgp_table_status(bgp4_status, bgp6_status, db):

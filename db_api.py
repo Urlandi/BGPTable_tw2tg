@@ -180,14 +180,10 @@ def save_subscribers(subscribers_v4, subscribers_v6, subscribers_db=None):
         is_subscriber_v4 = subscriber_id in subscribers_v4
         is_subscriber_v6 = subscriber_id in subscribers_v4
 
-        if not is_subscriber_v4 and not is_subscriber_v6:
-            if delete_subscriber(subscriber_id, db) != SUCCESS_STATE:
-                save_complete_status = ERROR_STATE
-        else:
-            if save_subscriber(is_subscriber_v4,
-                               is_subscriber_v6,
-                               subscriber_id, db) != SUCCESS_STATE:
-                save_complete_status = ERROR_STATE
+        if save_subscriber(is_subscriber_v4,
+                           is_subscriber_v6,
+                           subscriber_id, db) != SUCCESS_STATE:
+            save_complete_status = ERROR_STATE
 
     return save_complete_status
 

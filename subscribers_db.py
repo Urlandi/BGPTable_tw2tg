@@ -124,9 +124,12 @@ def subscriber_update(query, subscriber_id):
     elif query == tablev6_selector_unchecked:
         subscriber_v6_rem(subscriber_id)
 
-    db_api.save_subscriber(is_subscriber_v4(subscriber_id),
-                           is_subscriber_v6(subscriber_id),
-                           subscriber_id)
+    if not is_subscriber_v4(subscriber_id) and not is_subscriber_v6(subscriber_id):
+        db_api.delete_subscriber(subscriber_id)
+    else:
+        db_api.save_subscriber(is_subscriber_v4(subscriber_id),
+                               is_subscriber_v6(subscriber_id),
+                               subscriber_id)
 
 
 def subscribers_flush(db):

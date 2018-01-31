@@ -93,7 +93,7 @@ def main():
 
     exit_status_code = DONE
 
-    _logging_file_name = base_dirname+"bgptable_tw2tg.log"
+    _logging_file_name = base_dirname + "bgptable_tw2tg.log"
     logging.basicConfig(filename=_logging_file_name,
                         level=logging.INFO,
                         format="'%(asctime)s: %(name)s-%(levelname)s: %(message)s'")

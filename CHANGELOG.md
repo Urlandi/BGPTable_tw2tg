@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
  - Code refactoring
 
+### Fixed
+ - Unsubscription users really delete from DB
+
 ## 0.1.0 - 2018-01-25
 ### Added
  - Reading BGP4-Table and BGP6-Table Twitter users

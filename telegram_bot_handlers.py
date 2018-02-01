@@ -128,7 +128,7 @@ def last_status_cmd(bot, update):
         update.message.reply_text(resources_messages.subscriptions_empty_msg)
 
 
-def _update_status_all(bot, subscribers, status, bgp_status_msg):
+def _update_status_all(bot, subscribers, bgp_status_msg, status):
     subscribers_blocked = set()
 
     for subscriber_id in subscribers:
@@ -142,13 +142,13 @@ def _update_status_all(bot, subscribers, status, bgp_status_msg):
 def update_status_all_v4(bot, status):
 
     subscribers_v4 = get_subscribers_v4()
-    _update_status_all(bot, subscribers_v4, status, resources_messages.bgp4_status_msg)
+    _update_status_all(bot, subscribers_v4, resources_messages.bgp4_status_msg, status)
 
 
 def update_status_all_v6(bot, status):
 
     subscribers_v6 = get_subscribers_v6()
-    _update_status_all(bot, subscribers_v6, status, resources_messages.bgp6_status_msg)
+    _update_status_all(bot, subscribers_v6, resources_messages.bgp6_status_msg, status)
 
 
 def telegram_error(bot, update, error):

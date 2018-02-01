@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
  - Unsubscription users really delete from DB
+ - BGP4-Table title have corrected for BGP IPv6 status
 
 ## 0.1.0 - 2018-01-25
 ### Added

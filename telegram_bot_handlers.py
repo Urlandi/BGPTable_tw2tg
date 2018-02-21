@@ -107,7 +107,7 @@ def send_status(bot, subscriber_id, message, status):
         logging.info("{:d} sending stopped because - {}".format(subscriber_id, e))
         sent = False
 
-    except telegram.error as e:
+    except telegram.error.TelegramError as e:
 
         logging.error("{:d} sending skipping because - {}".format(subscriber_id, e))
 

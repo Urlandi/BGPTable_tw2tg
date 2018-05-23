@@ -51,5 +51,5 @@ Please, read the /help page or make your own customization directly via /setting
 subscriptions_empty_msg = "Oops, you haven't any subscriptions now. Go to /settings menu to fix this. \
 If you don't know what could you do, please read /help page."
 
-bgp4_status_msg = "<a href=\"https://twitter.com/bgp4_table/status/{:d}\">@BGP4-Table</a>"
-bgp6_status_msg = "<a href=\"https://twitter.com/bgp6_table/status/{:d}\">@BGP6-Table</a>"
+bgp4_status_msg = "{:s}\n<a href=\"https://twitter.com/bgp4_table/status/{:d}\">@BGP4-Table</a>"
+bgp6_status_msg = "{:s}\n<a href=\"https://twitter.com/bgp6_table/status/{:d}\">@BGP6-Table</a>"

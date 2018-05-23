@@ -42,9 +42,10 @@ def save_bgp_table_status(bgp4table_status, bgp6table_status, subscribers_db=Non
     else:
         db = subscribers_db
 
-    db_query = "UPDATE status SET IPV4 = {:d}, IPV6 = {:d}".format(
-        bgp4table_status,
-        bgp6table_status)
+    db_query = "UPDATE status SET IPV4 = {:d}, IPV6 = {:d}, IPV4_TEXT = '{:s}', IPV6_TEXT = '{:s}'".format(
+        bgp4table_status['id'], bgp6table_status['id'],
+        bgp4table_status['text'], bgp6table_status['text'],
+    )
 
     try:
         db_cursor = db.cursor()
@@ -69,9 +70,8 @@ def load_bgp_table_status(subscribers_db=None):
     else:
         db = subscribers_db
 
-    statuses_fields = ("status.IPV4", "status.IPV6",)
+    statuses_fields = ("status.IPV4", "status.IPV6", "status.IPV4_TEXT", "status.IPV6_TEXT")
 
-    statuses = None
     db_query = "SELECT {} FROM status LIMIT 1".format(",".join(statuses_fields))
 
     try:
@@ -88,7 +88,16 @@ def load_bgp_table_status(subscribers_db=None):
         logging.critical("Database BGP statuses returned empty data")
         return ERROR_STATE, ERROR_STATE
 
-    return statuses[0], statuses[1]
+    bgp4_status = dict()
+    bgp6_status = dict()
+
+    bgp4_status['id'] = statuses[0]
+    bgp4_status['text'] = statuses[2]
+
+    bgp6_status['id'] = statuses[1]
+    bgp6_status['text'] = statuses[3]
+
+    return bgp4_status, bgp6_status
 
 
 def save_subscriber(is_subscriber_v4, is_subscriber_v6, subscriber_id, subscribers_db=None):

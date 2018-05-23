@@ -17,7 +17,7 @@ repost_task = None
 
 
 def scheduler(db,  bot,
-              bgp4_last_tweet=1, bgp6_last_tweet=1,
+              bgp4_last_tweet, bgp6_last_tweet,
               bgp4_next_update=True, bgp6_next_update=True,
               repeated=0):
 
@@ -28,11 +28,12 @@ def scheduler(db,  bot,
     tweet4_fetch_error = False
 
     if bgp4_next_update:
-        bgp4_tweet_id, bgp4_tweet_text = get_user_status(birdy_client, bgp4_table_name, bgp4_last_tweet)
+        bgp4_tweet_id, bgp4_tweet_text = get_user_status(birdy_client, bgp4_table_name, bgp4_last_tweet['id'])
         if bgp4_tweet_id is None:
             tweet4_fetch_error = True
         else:
-            bgp4_current_tweet = bgp4_tweet_id
+            bgp4_current_tweet['id'] = bgp4_tweet_id
+            bgp4_current_tweet['text'] = bgp4_tweet_text
             update_status_all_v4(bot, bgp4_current_tweet)
 
     bgp6_table_name = "bgp6_table"
@@ -40,11 +41,12 @@ def scheduler(db,  bot,
     tweet6_fetch_error = False
 
     if bgp6_next_update:
-        bgp6_tweet_id, bgp6_tweet_text = get_user_status(birdy_client, bgp6_table_name, bgp6_last_tweet)
+        bgp6_tweet_id, bgp6_tweet_text = get_user_status(birdy_client, bgp6_table_name, bgp6_last_tweet['id'])
         if bgp6_tweet_id is None:
             tweet6_fetch_error = True
         else:
-            bgp6_current_tweet = bgp6_tweet_id
+            bgp6_current_tweet['id'] = bgp6_tweet_id
+            bgp6_current_tweet['text'] = bgp6_tweet_text
             update_status_all_v6(bot, bgp6_current_tweet)
 
     in_5_min = 300
@@ -65,9 +67,6 @@ def scheduler(db,  bot,
         repeat_count = repeated + 1
         bgp4_need_update = tweet4_fetch_error
         bgp6_need_update = tweet6_fetch_error
-
-    bgp4_current_tweet = bgp4_current_tweet
-    bgp6_current_tweet = bgp6_current_tweet
 
     save_bgp_table_status(bgp4_current_tweet, bgp6_current_tweet, db)
 

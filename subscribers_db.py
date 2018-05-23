@@ -2,8 +2,8 @@
 
 import db_api
 
-_bgp4table_status = 1
-_bgp6table_status = 1
+_bgp4table_status = dict()
+_bgp6table_status = dict()
 
 _subscribers_v4 = set()
 _subscribers_v6 = set()

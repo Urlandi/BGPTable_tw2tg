@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Fixed
  - Telegram error exception while sending message has been fixed
+ - Send full text message instead of link preview
 
 ## [1.0.0] - 2018-02-14
 ### Changed

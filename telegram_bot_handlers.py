@@ -95,10 +95,11 @@ def send_status(bot, subscriber_id, message, status):
 
     sent = True
     try:
-        if status != 1:
+        if status:
             bot.send_message(chat_id=subscriber_id,
-                             text=message.format(status),
-                             parse_mode=telegram.ParseMode.HTML)
+                             text=message.format(status['text'], status['id']),
+                             parse_mode=telegram.ParseMode.HTML,
+                             disable_web_page_preview=True)
 
     except (telegram.error.Unauthorized,
             telegram.error.BadRequest,

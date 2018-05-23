@@ -5,12 +5,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Fixed
+ - Send full text message instead of link preview
 
 ## [1.0.1]
 ### Fixed
-
  - Crash while sending message has been fixed
- - Send full text message instead of link preview
 
 ## [1.0.0] - 2018-02-14
 ### Changed

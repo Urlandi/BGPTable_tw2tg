@@ -5,6 +5,8 @@ import logging
 import telegram
 import resources_messages
 
+import re
+
 from subscribers_db import subscriber_start, subscriber_stop
 from subscribers_db import subscriber_update, is_subscriber_v4, is_subscriber_v6
 
@@ -96,10 +98,14 @@ def send_status(bot, subscriber_id, message, status):
     sent = True
     try:
         if status:
+            is_url = True
+            if re.search(r"https?://", status['text']):
+                is_url = False
+
             bot.send_message(chat_id=subscriber_id,
                              text=message.format(status['text'], status['id']),
                              parse_mode=telegram.ParseMode.HTML,
-                             disable_web_page_preview=True)
+                             disable_web_page_preview=is_url)
 
     except (telegram.error.Unauthorized,
             telegram.error.BadRequest,

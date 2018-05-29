@@ -10,7 +10,7 @@ CREATE TABLE status (
     IPV4 DECIMAL (32) UNIQUE
                    NOT NULL,
     IPV6 DECIMAL (32) UNIQUE
-                   NOT NULL
+                   NOT NULL,
     IPV4_TEXT TEXT (512) NOT NULL,
     IPV6_TEXT TEXT (512) NOT NULL
 );

@@ -6,11 +6,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [1.1.0]
+## [1.1.0] - 2018-05-29
 ### Changed
  - Send full text message instead of link preview
 
-## [1.0.1]
+## [1.0.1] - 2018-02-21
 ### Fixed
  - Crash while sending message has been fixed
 

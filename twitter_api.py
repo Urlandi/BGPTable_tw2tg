@@ -23,7 +23,8 @@ def get_user_status(birdy_client, user_screen_name, last_id=_FIRST_TWEET_ID):
         user_status_last = user_status.get(screen_name=user_screen_name,
                                            count=only_last_tweet,
                                            since_id=last_id,
-                                           trim_user="true")
+                                           trim_user="true",
+                                           tweet_mode="extended")
 
         if len(user_status_last.data) != 1:
             logging.debug("No status return from @{:s}".format(user_screen_name))
@@ -34,4 +35,4 @@ def get_user_status(birdy_client, user_screen_name, last_id=_FIRST_TWEET_ID):
         return None, None
 
     tweet = user_status_last.data[0]
-    return tweet.id, tweet.text
+    return tweet.id, tweet.full_text

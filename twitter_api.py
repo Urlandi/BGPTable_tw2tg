@@ -16,23 +16,29 @@ def twitter_connect():
 
 def get_user_status(birdy_client, user_screen_name, last_id=_FIRST_TWEET_ID):
 
-    only_last_tweet = 1
-
+    max_statuses_at_time = 6
+    tweets = None
     try:
         user_status = birdy_client.api.statuses.user_timeline
         user_status_last = user_status.get(screen_name=user_screen_name,
-                                           count=only_last_tweet,
+                                           count=max_statuses_at_time,
                                            since_id=last_id,
                                            trim_user="true",
                                            tweet_mode="extended")
 
-        if len(user_status_last.data) != 1:
-            logging.debug("No status return from @{:s}".format(user_screen_name))
-            return None, None
+        tweets = user_status_last.data
+        tweets_count = len(tweets)
+
+        if tweets_count <= 0:
+            logging.debug("No statuses return from @{:s}".format(user_screen_name))
+            return None
 
     except BirdyException as e:
         logging.error("Birdy twitter API error: {}".format(e))
-        return None, None
+        return None
 
-    tweet = user_status_last.data[0]
-    return tweet.id, tweet.full_text
+    if max_statuses_at_time < tweets_count:
+        logging.debug("Too much statuses return from @{:s}".format(user_screen_name))
+        tweets = tweets[0]
+
+    return tweets

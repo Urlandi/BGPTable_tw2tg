@@ -28,26 +28,28 @@ def scheduler(db,  bot,
     tweet4_fetch_error = False
 
     if bgp4_next_update:
-        bgp4_tweet_id, bgp4_tweet_text = get_user_status(birdy_client, bgp4_table_name, bgp4_last_tweet['id'])
-        if bgp4_tweet_id is None:
+        bgp4_tweets = get_user_status(birdy_client, bgp4_table_name, bgp4_last_tweet['id'])
+        if bgp4_tweets is None:
             tweet4_fetch_error = True
         else:
-            bgp4_current_tweet['id'] = bgp4_tweet_id
-            bgp4_current_tweet['text'] = bgp4_tweet_text
-            update_status_all_v4(bot, bgp4_current_tweet)
+            for bgp4_tweet in reversed(bgp4_tweets):
+                bgp4_current_tweet['id'] = bgp4_tweet.id
+                bgp4_current_tweet['text'] = bgp4_tweet.full_text
+                update_status_all_v4(bot, bgp4_current_tweet)
 
     bgp6_table_name = "bgp6_table"
     bgp6_current_tweet = bgp6_last_tweet
     tweet6_fetch_error = False
 
     if bgp6_next_update:
-        bgp6_tweet_id, bgp6_tweet_text = get_user_status(birdy_client, bgp6_table_name, bgp6_last_tweet['id'])
-        if bgp6_tweet_id is None:
+        bgp6_tweets = get_user_status(birdy_client, bgp6_table_name, bgp6_last_tweet['id'])
+        if bgp6_tweets is None:
             tweet6_fetch_error = True
         else:
-            bgp6_current_tweet['id'] = bgp6_tweet_id
-            bgp6_current_tweet['text'] = bgp6_tweet_text
-            update_status_all_v6(bot, bgp6_current_tweet)
+            for bgp6_tweet in reversed(bgp6_tweets):
+                bgp6_current_tweet['id'] = bgp6_tweet.id
+                bgp6_current_tweet['text'] = bgp6_tweet.full_text
+                update_status_all_v6(bot, bgp6_current_tweet)
 
     in_5_min = 300
     in_a_half = 1800
@@ -114,14 +116,18 @@ def main():
     logging.debug("Database subscribers loading")
     subscribers_v4 = load_subscribers("IPV4", subscribers_database)
     subscribers_v6 = load_subscribers("IPV6", subscribers_database)
-    if subscribers_v4 is None or subscribers_v6 is None:
-        logging.info("Empty subscribers database have been loaded")
 
-    for subscriber_v4_id in subscribers_v4:
-        subscriber_v4_add(subscriber_v4_id)
+    if subscribers_v4 is None:
+        logging.info("Empty v4 subscribers database have been loaded")
+    else:
+        for subscriber_v4_id in subscribers_v4:
+            subscriber_v4_add(subscriber_v4_id)
 
-    for subscriber_v6_id in subscribers_v6:
-        subscriber_v6_add(subscriber_v6_id)
+    if subscribers_v6 is None:
+        logging.info("Empty v6 subscribers database have been loaded")
+    else:
+        for subscriber_v6_id in subscribers_v6:
+            subscriber_v6_add(subscriber_v6_id)
 
     logging.debug("Database subscribers loaded")
 

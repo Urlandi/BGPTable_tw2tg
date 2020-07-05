@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Changed
- - Get full text tweet with 280 chars count (extended_mode). Because original bot added some information about ASes in their tweets.
+ - Get full text tweet with 280 chars count (extended_mode). Because original bot added some information about ASes in their tweets
+ - Get and post few messages at a time
 
 ## [1.1.0] - 2018-05-29
 ### Changed

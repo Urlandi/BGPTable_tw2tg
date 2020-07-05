@@ -39,6 +39,6 @@ def get_user_status(birdy_client, user_screen_name, last_id=_FIRST_TWEET_ID):
 
     if max_statuses_at_time < tweets_count:
         logging.debug("Too much statuses return from @{:s}".format(user_screen_name))
-        tweets = tweets[0]
+        tweets = (tweets[0],)
 
     return tweets

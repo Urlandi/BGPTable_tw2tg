@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - May select source of posts
 
 [Unreleased]: https://github.com/urlandi/bgptable_tw2tg/compare/v1.2.0...HEAD
-[1.1.0]: https://github.com/urlandi/bgptable_tw2tg/compare/v1.1.0...v1.2.0
+[1.2.0]: https://github.com/urlandi/bgptable_tw2tg/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/urlandi/bgptable_tw2tg/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/urlandi/bgptable_tw2tg/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/urlandi/bgptable_tw2tg/compare/v0.1.0...v1.0.0

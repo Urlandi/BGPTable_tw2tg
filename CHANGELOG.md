@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [1.2.0] - 2018-07-05
 ### Changed
  - Get full text tweet with 280 chars count (extended_mode). Because original bot added some information about ASes in their tweets
  - Get and post few messages at a time
@@ -30,7 +32,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - Post tweets to subscribers
  - May select source of posts
 
-[Unreleased]: https://github.com/urlandi/bgptable_tw2tg/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/urlandi/bgptable_tw2tg/compare/v1.2.0...HEAD
+[1.1.0]: https://github.com/urlandi/bgptable_tw2tg/compare/v1.1.0...v1.2.0
 [1.1.0]: https://github.com/urlandi/bgptable_tw2tg/compare/v1.0.1...v1.1.0
 [1.0.1]: https://github.com/urlandi/bgptable_tw2tg/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/urlandi/bgptable_tw2tg/compare/v0.1.0...v1.0.0

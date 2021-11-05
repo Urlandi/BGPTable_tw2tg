@@ -16,12 +16,11 @@ from subscribers_db import get_bgp_table_status, get_subscribers_v4, get_subscri
 
 
 def start_cmd(update, context):
-
     subscriber_id = update.message.from_user.id
     subscriber_start(subscriber_id)
 
     main_keyboard = telegram.ReplyKeyboardMarkup(resources_messages.main_keyboard_template,
-                                                 resize_keyboard="true", one_time_keyboard="true")
+                                                 resize_keyboard=True, one_time_keyboard=True)
 
     update.message.reply_text(text=resources_messages.start_msg, reply_markup=main_keyboard,
                               parse_mode=telegram.ParseMode.HTML,
@@ -65,14 +64,13 @@ def switch_keyboard(subscriber_id):
     buttonv4 = telegram.InlineKeyboardButton(buttonv4_name, callback_data=buttonv4_selector)
     buttonv6 = telegram.InlineKeyboardButton(buttonv6_name, callback_data=buttonv6_selector)
 
-    keyboard_template = ((buttonv4,),
-                         (buttonv6,),)
+    keyboard_template = [[buttonv4, ],
+                         [buttonv6, ], ]
 
     return telegram.InlineKeyboardMarkup(keyboard_template)
 
 
 def settings_cmd(update, context):
-
     if update.message is not None:
         subscriber_id = update.message.from_user.id
         settings_keyboard = switch_keyboard(subscriber_id)
@@ -94,7 +92,6 @@ def echo_cmd(update, context):
 
 
 def send_status(context, subscriber_id, message, status):
-
     sent = True
     try:
         if status:
@@ -103,9 +100,9 @@ def send_status(context, subscriber_id, message, status):
                 is_url = False
 
             context.bot.send_message(chat_id=subscriber_id,
-                             text=message.format(status['text'], status['id']),
-                             parse_mode=telegram.ParseMode.HTML,
-                             disable_web_page_preview=is_url)
+                                     text=message.format(status['text'], status['id']),
+                                     parse_mode=telegram.ParseMode.HTML,
+                                     disable_web_page_preview=is_url)
 
     except (telegram.error.Unauthorized,
             telegram.error.BadRequest,
@@ -147,13 +144,11 @@ def _update_status_all(context, subscribers, bgp_status_msg, status):
 
 
 def update_status_all_v4(context, status):
-
     subscribers_v4 = get_subscribers_v4()
     _update_status_all(context, subscribers_v4, resources_messages.bgp4_status_msg, status)
 
 
 def update_status_all_v6(context, status):
-
     subscribers_v6 = get_subscribers_v6()
     _update_status_all(context, subscribers_v6, resources_messages.bgp6_status_msg, status)
 

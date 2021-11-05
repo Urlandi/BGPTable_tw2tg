@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackQueryHandler, Filters, BaseFilter
+from telegram.ext import Updater, CommandHandler, MessageHandler, CallbackQueryHandler, Filters, MessageFilter
 from telegram import TelegramError
 
 from config_telegram_auth import TOKEN
@@ -11,17 +11,17 @@ from resources_messages import keyboard_buttons_name
 import logging
 
 
-class FilterLastStatus(BaseFilter):
+class FilterLastStatus(MessageFilter):
     def filter(self, message):
         return keyboard_buttons_name["last_status_name"] == message.text
 
 
-class FilterSettings(BaseFilter):
+class FilterSettings(MessageFilter):
     def filter(self, message):
         return keyboard_buttons_name["settings_name"] == message.text
 
 
-class FilterHelp(BaseFilter):
+class FilterHelp(MessageFilter):
     def filter(self, message):
         return keyboard_buttons_name["help_name"] == message.text
 
@@ -50,7 +50,7 @@ def telegram_connect():
 
         dispatcher.add_error_handler(telegram_error)
 
-        updater.start_polling(clean=True)  # God save the GIL
+        updater.start_polling(drop_pending_updates=True)  # God save the GIL
 
     except TelegramError as e:
         logging.fatal("Can't connect to telegram - {}".format(e))

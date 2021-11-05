@@ -15,7 +15,7 @@ from subscribers_db import tablev4_selector_unchecked, tablev6_selector_unchecke
 from subscribers_db import get_bgp_table_status, get_subscribers_v4, get_subscribers_v6
 
 
-def start_cmd(bot, update):
+def start_cmd(update, context):
 
     subscriber_id = update.message.from_user.id
     subscriber_start(subscriber_id)
@@ -28,7 +28,7 @@ def start_cmd(bot, update):
                               disable_web_page_preview=True)
 
 
-def stop_cmd(bot, update):
+def stop_cmd(update, context):
     subscriber_id = update.message.from_user.id
     subscriber_stop(subscriber_id)
 
@@ -37,7 +37,7 @@ def stop_cmd(bot, update):
                               disable_web_page_preview=True)
 
 
-def help_cmd(bot, update):
+def help_cmd(update, context):
     update.message.reply_text(text=resources_messages.help_msg,
                               parse_mode=telegram.ParseMode.HTML,
                               disable_web_page_preview=True)
@@ -71,7 +71,7 @@ def switch_keyboard(subscriber_id):
     return telegram.InlineKeyboardMarkup(keyboard_template)
 
 
-def settings_cmd(bot, update):
+def settings_cmd(update, context):
 
     if update.message is not None:
         subscriber_id = update.message.from_user.id
@@ -87,13 +87,13 @@ def settings_cmd(bot, update):
         update.callback_query.message.edit_reply_markup(reply_markup=settings_keyboard)
 
 
-def echo_cmd(bot, update):
+def echo_cmd(update, context):
     update.message.reply_text(text=resources_messages.echo_msg,
                               parse_mode=telegram.ParseMode.HTML,
                               disable_web_page_preview=True)
 
 
-def send_status(bot, subscriber_id, message, status):
+def send_status(context, subscriber_id, message, status):
 
     sent = True
     try:
@@ -102,7 +102,7 @@ def send_status(bot, subscriber_id, message, status):
             if re.search(r"https?://", status['text']):
                 is_url = False
 
-            bot.send_message(chat_id=subscriber_id,
+            context.bot.send_message(chat_id=subscriber_id,
                              text=message.format(status['text'], status['id']),
                              parse_mode=telegram.ParseMode.HTML,
                              disable_web_page_preview=is_url)
@@ -121,42 +121,42 @@ def send_status(bot, subscriber_id, message, status):
     return sent
 
 
-def last_status_cmd(bot, update):
+def last_status_cmd(update, context):
     subscriber_id = update.message.from_user.id
 
     bgp4table_status, bgp6table_status = get_bgp_table_status()
 
     if is_subscriber_v4(subscriber_id):
-        send_status(bot, subscriber_id, resources_messages.bgp4_status_msg, bgp4table_status)
+        send_status(context, subscriber_id, resources_messages.bgp4_status_msg, bgp4table_status)
     if is_subscriber_v6(subscriber_id):
-        send_status(bot, subscriber_id, resources_messages.bgp6_status_msg, bgp6table_status)
+        send_status(context, subscriber_id, resources_messages.bgp6_status_msg, bgp6table_status)
 
     if not is_subscriber_v4(subscriber_id) and not is_subscriber_v6(subscriber_id):
         update.message.reply_text(resources_messages.subscriptions_empty_msg)
 
 
-def _update_status_all(bot, subscribers, bgp_status_msg, status):
+def _update_status_all(context, subscribers, bgp_status_msg, status):
     subscribers_blocked = set()
 
     for subscriber_id in subscribers:
-        if not send_status(bot, subscriber_id, bgp_status_msg, status):
+        if not send_status(context, subscriber_id, bgp_status_msg, status):
             subscribers_blocked.add(subscriber_id)
 
     for subscriber_id in subscribers_blocked:
         subscriber_stop(subscriber_id)
 
 
-def update_status_all_v4(bot, status):
+def update_status_all_v4(context, status):
 
     subscribers_v4 = get_subscribers_v4()
-    _update_status_all(bot, subscribers_v4, resources_messages.bgp4_status_msg, status)
+    _update_status_all(context, subscribers_v4, resources_messages.bgp4_status_msg, status)
 
 
-def update_status_all_v6(bot, status):
+def update_status_all_v6(context, status):
 
     subscribers_v6 = get_subscribers_v6()
-    _update_status_all(bot, subscribers_v6, resources_messages.bgp6_status_msg, status)
+    _update_status_all(context, subscribers_v6, resources_messages.bgp6_status_msg, status)
 
 
-def telegram_error(bot, update, error):
-    logging.error("{} - {}".format(update, error))
+def telegram_error(update, context):
+    logging.error("{} - {}".format(update, context.error))

@@ -34,7 +34,7 @@ help_msg = "Hello, I'm a BGP-Table Telegram bot. I am reading the \
 and the <a href=\"https://twitter.com/bgp6_table\">@BGP6-Table</a> in Twitter \
 and reposting every tweet from there. As result you see some statistics about the Internet BGP table state, \
 which is collected by <a href=\"https://twitter.com/mellowdrifter\">Darren O'Connor</a>, \
-these Twitter bots creator.\n\n\
+those Twitter bots creator.\n\n\
 Please go to the /settings menu, where you can setup which BGP table state v4 or v6 you would like to see. \
 The /start command subscribes you to all updates and the /stop unsubscribes and mutes.\n\n\
 Updates are sent to you as fast as they appear in the original Twitter bots, usually every 6 hours. \

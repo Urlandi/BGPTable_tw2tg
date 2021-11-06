@@ -17,7 +17,7 @@ def twitter_connect():
 def get_user_status(birdy_client, user_screen_name, last_id=_FIRST_TWEET_ID):
 
     max_statuses_at_time = 6
-    tweets = None
+
     try:
         user_status = birdy_client.api.statuses.user_timeline
         user_status_last = user_status.get(screen_name=user_screen_name,

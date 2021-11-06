@@ -27,7 +27,6 @@ class FilterHelp(MessageFilter):
 
 
 def telegram_connect():
-    updater = None
 
     try:
         updater = Updater(token=TOKEN)

@@ -18,8 +18,6 @@ _database_global_handler = None
 
 def db_connect(db_name=base_dirname+SUBSCRIBERS_DATABASE_NAME):
 
-    db = None
-
     try:
         db = db_api.connect(db_name, check_same_thread=False)
     except db_api.DatabaseError as e:
@@ -128,7 +126,7 @@ def save_subscriber(is_subscriber_v4, is_subscriber_v6, subscriber_id, subscribe
     try:
         db_cursor.execute(db_query_insert)
         db.commit()
-    except db_api.IntegrityError as e:
+    except db_api.IntegrityError:
         db.rollback()
         subscriber_exist = True
     except db_api.DatabaseError as e:
@@ -207,7 +205,6 @@ def load_subscribers(table_type, subscribers_db=None):
     else:
         db = subscribers_db
 
-    subscribers = None
     db_query = "SELECT subscribers.subscriber_id FROM subscribers \
 WHERE subscribers.{:s} = 1".format(table_type)
 

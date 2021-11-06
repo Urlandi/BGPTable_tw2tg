@@ -7,6 +7,9 @@ import resources_messages
 
 import re
 
+from queue import Queue, Empty
+from threading import Thread
+
 from subscribers_db import subscriber_start, subscriber_stop
 from subscribers_db import subscriber_update, is_subscriber_v4, is_subscriber_v6
 
@@ -91,7 +94,7 @@ def echo_cmd(update, context):
                               disable_web_page_preview=True)
 
 
-def send_status(context, subscriber_id, message, status):
+def send_status(bot, subscriber_id, message, status):
     sent = True
     try:
         if status:
@@ -99,10 +102,10 @@ def send_status(context, subscriber_id, message, status):
             if re.search(r"https?://", status['text']):
                 is_url = False
 
-            context.bot.send_message(chat_id=subscriber_id,
-                                     text=message.format(status['text'], status['id']),
-                                     parse_mode=telegram.ParseMode.HTML,
-                                     disable_web_page_preview=is_url)
+            bot.send_message(chat_id=subscriber_id,
+                             text=message.format(status['text'], status['id']),
+                             parse_mode=telegram.ParseMode.HTML,
+                             disable_web_page_preview=is_url)
 
     except (telegram.error.Unauthorized,
             telegram.error.BadRequest,
@@ -124,33 +127,72 @@ def last_status_cmd(update, context):
     bgp4table_status, bgp6table_status = get_bgp_table_status()
 
     if is_subscriber_v4(subscriber_id):
-        send_status(context, subscriber_id, resources_messages.bgp4_status_msg, bgp4table_status)
+        send_status(context.bot, subscriber_id, resources_messages.bgp4_status_msg, bgp4table_status)
     if is_subscriber_v6(subscriber_id):
-        send_status(context, subscriber_id, resources_messages.bgp6_status_msg, bgp6table_status)
+        send_status(context.bot, subscriber_id, resources_messages.bgp6_status_msg, bgp6table_status)
 
     if not is_subscriber_v4(subscriber_id) and not is_subscriber_v6(subscriber_id):
         update.message.reply_text(resources_messages.subscriptions_empty_msg)
 
 
-def _update_status_all(context, subscribers, bgp_status_msg, status):
-    subscribers_blocked = set()
+def _send_status_queued(bot, subscribers_queue, subscribers_blocked_queue, bgp_status_msg, status):
+
+    while True:
+        subscriber_id = subscribers_queue.get()
+        if subscriber_id is not None:
+            if not send_status(bot, subscriber_id, bgp_status_msg, status):
+                subscribers_blocked_queue.put(subscriber_id)
+            subscribers_queue.task_done()
+        else:
+            break
+
+    subscribers_queue.put(subscriber_id)
+    return subscribers_queue.task_done()
+
+
+def _update_status_all(bot, subscribers, bgp_status_msg, status):
+
+    max_threads = 4
+    max_subscribes_queue_len = 64
+
+    subscribers_queue = Queue(max_subscribes_queue_len)
+    subscribers_blocked_queue = Queue()
+
+    send_threads = set()
+    for num_thread in range(max_threads):
+        new_send_thread = Thread(target=_send_status_queued,
+                                 args=(bot, subscribers_queue, subscribers_blocked_queue, bgp_status_msg, status))
+        send_threads.add(new_send_thread)
+        new_send_thread.start()
 
     for subscriber_id in subscribers:
-        if not send_status(context, subscriber_id, bgp_status_msg, status):
-            subscribers_blocked.add(subscriber_id)
+        subscribers_queue.put(subscriber_id)
+
+    subscribers_queue.join()
+
+    subscribers_queue.put(None)
+    for send_thread in send_threads:
+        send_thread.join()
+
+    subscribers_blocked = set()
+    try:
+        while not subscribers_blocked_queue.empty():
+            subscribers_blocked.add(subscribers_blocked_queue.get_nowait())
+    except Empty:
+        pass
 
     for subscriber_id in subscribers_blocked:
         subscriber_stop(subscriber_id)
 
 
-def update_status_all_v4(context, status):
+def update_status_all_v4(bot, status):
     subscribers_v4 = get_subscribers_v4()
-    _update_status_all(context, subscribers_v4, resources_messages.bgp4_status_msg, status)
+    _update_status_all(bot, subscribers_v4, resources_messages.bgp4_status_msg, status)
 
 
-def update_status_all_v6(context, status):
+def update_status_all_v6(bot, status):
     subscribers_v6 = get_subscribers_v6()
-    _update_status_all(context, subscribers_v6, resources_messages.bgp6_status_msg, status)
+    _update_status_all(bot, subscribers_v6, resources_messages.bgp6_status_msg, status)
 
 
 def telegram_error(update, context):

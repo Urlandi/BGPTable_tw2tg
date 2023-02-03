@@ -2,7 +2,7 @@
 from threading import Timer
 from datetime import datetime
 
-from twitter_api import get_user_status, twitter_connect
+from mastodon_api import get_user_status, mastodon_connect, get_user_id
 from subscribers_db import save_bgp_table_status, subscriber_v4_add, subscriber_v6_add, subscribers_flush
 
 from telegram_bot import telegram_connect
@@ -17,39 +17,43 @@ repost_task = None
 
 
 def scheduler(db,  bot,
-              bgp4_last_tweet, bgp6_last_tweet,
+              bgp4_last_toot, bgp6_last_toot,
               bgp4_next_update=True, bgp6_next_update=True,
               repeated=0):
 
-    birdy_client = twitter_connect()
+    mastodon_client = mastodon_connect()
 
-    bgp4_table_name = "bgp4_table"
-    bgp4_current_tweet = bgp4_last_tweet
-    tweet4_fetch_error = False
+    bgp4_table_id = get_user_id(mastodon_client, 'bgp4')
+    bgp4_current_toot = bgp4_last_toot
+    toot4_fetch_error = False
 
     if bgp4_next_update:
-        bgp4_tweets = get_user_status(birdy_client, bgp4_table_name, bgp4_last_tweet['id'])
-        if bgp4_tweets is None:
-            tweet4_fetch_error = True
+        bgp4_toots = get_user_status(mastodon_client, bgp4_table_id, bgp4_last_toot['id'])
+        if bgp4_toots is None:
+            toot4_fetch_error = True
         else:
-            for bgp4_tweet in reversed(bgp4_tweets):
-                bgp4_current_tweet['id'] = bgp4_tweet.id
-                bgp4_current_tweet['text'] = bgp4_tweet.full_text
-                update_status_all_v4(bot, bgp4_current_tweet)
+            for bgp4_toot in reversed(bgp4_toots):
+                bgp4_current_toot['id'] = bgp4_toot['id']
+                bgp4_current_toot['text'] = bgp4_toot['text']
+                if bgp4_toot['url'] is not None:
+                    bgp4_current_toot['text'] += ' ' + bgp4_toot['url']
+                update_status_all_v4(bot, bgp4_current_toot)
 
-    bgp6_table_name = "bgp6_table"
-    bgp6_current_tweet = bgp6_last_tweet
-    tweet6_fetch_error = False
+    bgp6_table_id = get_user_id(mastodon_client, 'bgp6')
+    bgp6_current_toot = bgp6_last_toot
+    toot6_fetch_error = False
 
     if bgp6_next_update:
-        bgp6_tweets = get_user_status(birdy_client, bgp6_table_name, bgp6_last_tweet['id'])
-        if bgp6_tweets is None:
-            tweet6_fetch_error = True
+        bgp6_toots = get_user_status(mastodon_client, bgp6_table_id, bgp6_last_toot['id'])
+        if bgp6_toots is None:
+            toot6_fetch_error = True
         else:
-            for bgp6_tweet in reversed(bgp6_tweets):
-                bgp6_current_tweet['id'] = bgp6_tweet.id
-                bgp6_current_tweet['text'] = bgp6_tweet.full_text
-                update_status_all_v6(bot, bgp6_current_tweet)
+            for bgp6_toot in reversed(bgp6_toots):
+                bgp6_current_toot['id'] = bgp6_toot['id']
+                bgp6_current_toot['text'] = bgp6_toot['text']
+                if bgp6_toot['url'] is not None:
+                    bgp6_current_toot['text'] += ' ' + bgp6_toot['url']
+                update_status_all_v6(bot, bgp6_current_toot)
 
     in_5_min = 300
     in_a_half = 1800
@@ -64,13 +68,13 @@ def scheduler(db,  bot,
 
     if max_fetch_repeat <= repeated:
         next_start_in = in_a_half
-    elif tweet4_fetch_error or tweet6_fetch_error:
+    elif toot4_fetch_error or toot6_fetch_error:
         next_start_in = in_5_min
         repeat_count = repeated + 1
-        bgp4_need_update = tweet4_fetch_error
-        bgp6_need_update = tweet6_fetch_error
+        bgp4_need_update = toot4_fetch_error
+        bgp6_need_update = toot6_fetch_error
 
-    save_bgp_table_status(bgp4_current_tweet, bgp6_current_tweet, db)
+    save_bgp_table_status(bgp4_current_toot, bgp6_current_toot, db)
 
     internet_wait = 30
     timenow = round(datetime.now().timestamp())
@@ -78,7 +82,7 @@ def scheduler(db,  bot,
 
     global repost_task
     repost_task = Timer(timer_start_at, scheduler, (db, bot,
-                                                    bgp4_current_tweet, bgp6_current_tweet,
+                                                    bgp4_current_toot, bgp6_current_toot,
                                                     bgp4_need_update, bgp6_need_update,
                                                     repeat_count))
     repost_task.start()

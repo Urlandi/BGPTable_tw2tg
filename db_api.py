@@ -91,9 +91,11 @@ def load_bgp_table_status(subscribers_db=None):
 
     bgp4_status['id'] = statuses[0]
     bgp4_status['text'] = statuses[2]
+    bgp4_status['url'] = None
 
     bgp6_status['id'] = statuses[1]
     bgp6_status['text'] = statuses[3]
+    bgp6_status['url'] = None
 
     return bgp4_status, bgp6_status
 

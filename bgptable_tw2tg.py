@@ -13,6 +13,7 @@ from db_api import db_connect, db_close, load_bgp_table_status, load_subscribers
 
 import logging
 
+import re
 repost_task = None
 
 
@@ -21,9 +22,11 @@ def scheduler(db,  bot,
               bgp4_next_update=True, bgp6_next_update=True,
               repeated=0):
 
+    _html_tag_re = re.compile('<.*?>')
+
     mastodon_client = mastodon_connect()
 
-    bgp4_table_id = get_user_id(mastodon_client, 'bgp4')
+    bgp4_table_id = 109305141474240286  # get_user_id(mastodon_client, 'bgp4')
     bgp4_current_toot = bgp4_last_toot
     toot4_fetch_error = False
 
@@ -34,12 +37,11 @@ def scheduler(db,  bot,
         else:
             for bgp4_toot in reversed(bgp4_toots):
                 bgp4_current_toot['id'] = bgp4_toot['id']
-                bgp4_current_toot['text'] = bgp4_toot['text']
-                if bgp4_toot['url'] is not None:
-                    bgp4_current_toot['text'] += ' ' + bgp4_toot['url']
+                bgp4_current_toot['text'] = re.sub(_html_tag_re, '', bgp4_toot['text'])
+                bgp4_current_toot['url'] = bgp4_toot['url']
                 update_status_all_v4(bot, bgp4_current_toot)
 
-    bgp6_table_id = get_user_id(mastodon_client, 'bgp6')
+    bgp6_table_id = 109390430012878426  # get_user_id(mastodon_client, 'bgp6')
     bgp6_current_toot = bgp6_last_toot
     toot6_fetch_error = False
 
@@ -50,9 +52,8 @@ def scheduler(db,  bot,
         else:
             for bgp6_toot in reversed(bgp6_toots):
                 bgp6_current_toot['id'] = bgp6_toot['id']
-                bgp6_current_toot['text'] = bgp6_toot['text']
-                if bgp6_toot['url'] is not None:
-                    bgp6_current_toot['text'] += ' ' + bgp6_toot['url']
+                bgp6_current_toot['text'] = re.sub(_html_tag_re, '', bgp6_toot['text'])
+                bgp6_current_toot['url'] = bgp6_toot['url']
                 update_status_all_v6(bot, bgp6_current_toot)
 
     in_5_min = 300
@@ -76,7 +77,7 @@ def scheduler(db,  bot,
 
     save_bgp_table_status(bgp4_current_toot, bgp6_current_toot, db)
 
-    internet_wait = 30
+    internet_wait = 90
     timenow = round(datetime.now().timestamp())
     timer_start_at = (timenow // next_start_in + 1) * next_start_in - timenow + internet_wait
 

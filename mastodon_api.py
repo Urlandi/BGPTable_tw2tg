@@ -40,14 +40,13 @@ def get_user_status(mastodon_client, user_id, last_id=_FIRST_TOOT_ID):
         user_statuses = mastodon_client.account_statuses(user_id,
                                                          since_id=last_id,
                                                          limit=max_statuses_at_time,
-                                                         local=True,
                                                          exclude_replies=True,
                                                          exclude_reblogs=True)
 
         toots_count = len(user_statuses)
 
         if toots_count <= 0:
-            logging.debug("No statuses return from id:{:s}".format(user_id))
+            logging.debug("No statuses return from id:{}".format(user_id))
             return None
 
     except MastodonError as e:
@@ -55,12 +54,12 @@ def get_user_status(mastodon_client, user_id, last_id=_FIRST_TOOT_ID):
         return None
 
     toots = list(map(lambda status: {'id': status['id'], 'text': status['content'],
-                                     'url': status['media_attachments']['url']
-                                     if len(status['media_attachments']) else None},
+                                     'url': status['media_attachments'][0]['url']
+                                     if 0 < len(status['media_attachments']) else None},
                      user_statuses))
 
     if max_statuses_at_time < toots_count:
-        logging.debug("Too much statuses return from id:{:s}".format(user_id))
+        logging.debug("Too much statuses return from id:{}".format(user_id))
         toots = (toots[0],)
 
     return toots

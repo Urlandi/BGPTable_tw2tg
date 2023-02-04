@@ -26,18 +26,18 @@ Also the /help command shows some helpful information about me."
 
 
 settings_msg = "You may choose from which \
-<a href=\"https://twitter.com/bgp4_table\">@BGP4-Table</a>, \
-<a href=\"https://twitter.com/bgp6_table\">@BGP6-Table</a> or both you'll receive updates."
+<a href=\"https://noc.social/@bgp4\">@bgp4@noc.social</a>, \
+<a href=\"https://noc.social/@bgp6\">@bgp6@noc.social</a> or both you'll receive updates."
 
 help_msg = "Hello, I'm a BGP-Table Telegram bot. I am reading the \
-<a href=\"https://twitter.com/bgp4_table\">@BGP4-Table</a> \
-and the <a href=\"https://twitter.com/bgp6_table\">@BGP6-Table</a> in Twitter \
-and reposting every tweet from there. As result you see some statistics about the Internet BGP table state, \
-which is collected by <a href=\"https://twitter.com/mellowdrifter\">Darren O'Connor</a>, \
-those Twitter bots creator.\n\n\
+<a href=\"https://noc.social/@bgp4\">@bgp4@noc.social</a> \
+and the <a href=\"https://noc.social/@bgp6\">@bgp6@noc.social</a> in Mastodon \
+and reposting every toot from there. As result you see some statistics about the Internet BGP table state, \
+which is collected by <a href=\"https://mastodon.social/@mellowd\">Darren O'Connor</a>, \
+these Mastodon bots creator.\n\n\
 Please go to the /settings menu, where you can setup which BGP table state v4 or v6 you would like to see. \
 The /start command subscribes you to all updates and the /stop unsubscribes and mutes.\n\n\
-Updates are sent to you as fast as they appear in the original Twitter bots, usually every 6 hours. \
+Updates are sent to you as fast as they appear in the original Mastodon bots, usually every 6 hours. \
 The command /status sends the last posted status to the stream.\n\n\
 My author @UrgentPirate open for questions and proposals. \
 My code is on <a href=\"https://github.com/Urlandi/BGPTable_tw2tg/issues\">GitHub.</a>"
@@ -50,5 +50,5 @@ Please read the /help page or make your own customization directly via the /sett
 subscriptions_empty_msg = "Oops, you haven't any subscriptions now. Go to the /settings menu to fix this. \
 If you don't know what can you do, please read the /help page."
 
-bgp4_status_msg = "{:s}\n<a href=\"https://twitter.com/bgp4_table/status/{:d}\">@BGP4-Table</a>"
-bgp6_status_msg = "{:s}\n<a href=\"https://twitter.com/bgp6_table/status/{:d}\">@BGP6-Table</a>"
+bgp4_status_msg = "{:s}{:s}\n<a href=\"https://noc.social/@bgp4/{:d}\">@bgp4@noc.social</a>"
+bgp6_status_msg = "{:s}{:s}\n<a href=\"https://noc.social/@bgp6/{:d}\">@bgp6@noc.social</a>"

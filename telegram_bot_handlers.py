@@ -5,8 +5,6 @@ import logging
 import telegram
 import resources_messages
 
-import re
-
 from queue import Queue, Empty
 from threading import Thread
 
@@ -98,14 +96,18 @@ def send_status(bot, subscriber_id, message, status):
     sent = True
     try:
         if status:
-            is_url = True
-            if re.search(r"https?://", status['text']):
-                is_url = False
+            isnt_url = True
+            if status['url'] is None:
+                status_text = message.format(status['text'], '', status['id'])
+            else:
+                attach_media_url = " <a href=\"{:s}\">[a]</a>".format(status['url'])
+                status_text = message.format(status['text'], attach_media_url, status['id'])
+                isnt_url = False
 
             bot.send_message(chat_id=subscriber_id,
-                             text=message.format(status['text'], status['id']),
+                             text=status_text,
                              parse_mode=telegram.ParseMode.HTML,
-                             disable_web_page_preview=is_url)
+                             disable_web_page_preview=isnt_url)
 
     except (telegram.error.Unauthorized,
             telegram.error.BadRequest,
